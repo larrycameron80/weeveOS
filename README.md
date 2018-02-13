@@ -1,6 +1,7 @@
-# weeve_clients
+[![Join the chat at https://gitter.im/weeveiot/weeveOS](https://badges.gitter.im/weeveiot/weeveOS.svg)](https://gitter.im/weeveiot/weeveOS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)  
 
-[![Join the chat at https://gitter.im/weeveiot/weeveOS](https://badges.gitter.im/weeveiot/weeveOS.svg)](https://gitter.im/weeveiot/weeveOS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+# weeve_clients
 Weeve platform clients for weeveOS
 
 ## host folder
