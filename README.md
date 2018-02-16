@@ -41,17 +41,17 @@ A bit more concrete, a Trusted Execution Environment (TEE) provides the isolatio
 
 We refer the reader to the tech white paper for details <a href="http://papers.weeve.network/weeve_whitepaper.pdf" target="_blank">weeve Whitepaper</a>. 
 
-The  weeve Platform is the core backend software. It empowers individuals, enterprises or governmental bodies to set up, curate or join existing marketplaces. An example of an energy trading marketplace can be found here <a href="http://market.weeve.network" target="_blank">weeve marketplace</a>. Once you installed the weeveOS docker, you can register a device on the marketplace and participate in a fair exchange.
+The  weeve Platform is the core backend software. It empowers individuals, enterprises or governmental bodies to set up, curate or join existing marketplaces. An example of an energy trading marketplace can be found here <a href="http://dev.weeve.network" target="_blank">weeve marketplace</a>. Once you installed the weeveOS docker, you can register a device on the marketplace and participate in a fair exchange.
 
 ## <a name="marketplace"></a>Join our Marketplace
-Go to <a href="http://market.weeve.network" target="_blank">market.weeve.network</a> and register yourself. Now log into the marketplace and go the the **MY ACCOUNT -> Device Curator** and start the device registration by clicking on the **ADD DEVICE** button in the bottom-left corner. Choose a name and other preferred options for your new device. At the end of the registration process you will receive a *Device ID*, which needs to be used in the registration process of the client (see: <a href="#weeveclient">Run weeve client</a>). You can also copy the Device ID after finishing the registration process by clicking on the devices' name in the device curator. Each device can act as a *producer* (offering the asset of tokenized energy) or as *consumer* (demanding tokenized energy for the exchange for ether).
+Go to <a href="http://dev.weeve.network" target="_blank">dev.weeve.network</a> and register yourself. Now log into the marketplace and go the the **MY ACCOUNT -> Device Curator** and start the device registration by clicking on the **ADD DEVICE** button in the bottom-left corner. Choose a name and other preferred options for your new device. At the end of the registration process you will receive a *Device ID*, which needs to be used in the registration process of the client (see: <a href="#weeveclient">Run weeve client</a>). You can also copy the Device ID after finishing the registration process by clicking on the devices' name in the device curator. Each device can act as a *producer* (offering the asset of tokenized energy) or as *consumer* (demanding tokenized energy for the exchange for ether).
 
 ## <a name="dockerimage"></a>Pull the Docker Image
 
 ###  MacOS, Windows
 
 In case you want to try out our demonstrator on a non-linux-based machine you need to use a linux-based virtual machine. 
-We recommend using our <a href="http://market.weeve.network/dl/weeve-vm.ova" target="_blank">weeve VM</a> to make sure you can use all of our core features. It comes with all dependecies, to make sure that you can get started immediately! (The root password is *weeve*). 
+We recommend using our <a href="http://dev.weeve.network/dl/weeve-vm.ova" target="_blank">weeve VM</a> to make sure you can use all of our core features. It comes with all dependecies, to make sure that you can get started immediately! (The root password is *weeve*). 
 
 Before running in the terminal the following *case-sensitive* instructions, it can be helpful to activate the copy&paste function of the VM via a <a href="https://www.liberiangeek.net/2013/09/copy-paste-virtualbox-host-guest-machines/">shared</a> clipboard.
 
