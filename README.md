@@ -55,6 +55,8 @@ We recommend using our <a href="http://dev.weeve.network/dl/weeve-vm.ova" target
 
 Before running in the terminal the following *case-sensitive* instructions, it can be helpful to activate the copy&paste function of the VM via a <a href="https://www.liberiangeek.net/2013/09/copy-paste-virtualbox-host-guest-machines/">shared</a> clipboard.
 
+Start the terminal (Shortcut: Ctrl + Alt + T)
+
 Download the latest version of our weeveOS docker image (approx. 1 GB)
 ```
 sudo docker pull weeveiot/weeveos
