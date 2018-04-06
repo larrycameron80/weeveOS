@@ -24,25 +24,54 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+#include <ta_common.h>
+#include <cmd_control.h>
 
-/*
- * The name of this file must not be modified
- */
+/**
+*	Basic control for open and close sessions
+*/
+TEE_Result TA_CreateEntryPoint(void)
+{
+	DMSG("Entry point created");
 
-#ifndef USER_TA_HEADER_DEFINES_H
-#define USER_TA_HEADER_DEFINES_H
+	return TEE_SUCCESS;
+}
 
-#include <eciotify_generals.h> /* To get the TA_ECIOTIFY_UUID define */
+void TA_DestroyEntryPoint(void)
+{
+	DMSG("Entry point destroy");
+}
 
-#define TA_UUID TA_ECIOTIFY_UUID
+TEE_Result TA_OpenSessionEntryPoint
+(
+	uint32_t param_types,
+	TEE_Param __maybe_unused params[4],
+	void __maybe_unused **sess_ctx
+)
+{
+	uint32_t exp_param_types = TEE_PARAM_TYPES(
+		TEE_PARAM_TYPE_NONE,
+		TEE_PARAM_TYPE_NONE,
+		TEE_PARAM_TYPE_NONE,
+		TEE_PARAM_TYPE_NONE
+	);
 
-#define TA_FLAGS                    (TA_FLAG_MULTI_SESSION | TA_FLAG_EXEC_DDR)
-#define TA_STACK_SIZE               (2 * 1024)
-#define TA_DATA_SIZE                (32 * 1024)
+	DMSG("Session is open");
 
-#define TA_CURRENT_TA_EXT_PROPERTIES \
-    { "gp.ta.description", USER_TA_PROP_TYPE_STRING, \
-        "Eciotify TA" }, \
-    { "gp.ta.version", USER_TA_PROP_TYPE_U32, &(const uint32_t){ 0x0010 } }
+	if (param_types != exp_param_types) 
+	{
+		return TEE_ERROR_BAD_PARAMETERS;
+	}
 
-#endif /*USER_TA_HEADER_DEFINES_H*/
+	/* Unused parameters */
+	(void)&params;
+	(void)&sess_ctx;
+
+	return TEE_SUCCESS;
+}
+
+void TA_CloseSessionEntryPoint(void __maybe_unused *sess_ctx)
+{
+	(void)&sess_ctx; /* Unused parameter */
+	IMSG("Session closed!\n");
+}

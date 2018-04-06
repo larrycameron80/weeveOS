@@ -1,6 +1,6 @@
 host/*.o
 consumer
-
+ethwallet
 producer
 register
 unregister

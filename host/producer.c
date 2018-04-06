@@ -13,13 +13,15 @@
 #include <tee_client_api.h>
 
 /* To the the UUID (found the the TA's h-file(s)) */
-#include <eciotify_ta.h>
+#include <eciotify_generals.h>
+#include <weeve_sockets.h>
 
 TEEC_Result start_ta_context();
 void stop_ta_context();
-int producer();
+int start_producer();
 int getch(void);
 void * get_pc () {return __builtin_return_address(0);}
+char *broker_ip = BROKER_IP_LIVE;
 
 TEEC_Context ctx;
 TEEC_Session sess;
@@ -27,20 +29,30 @@ TEEC_Session sess;
 int main(int argc, char *argv[])
 {
 	printf("###### Producer Client ######\n");
-	producer();
+	if(argc > 1)
+	{
+		if(!strcmp(argv[1], "-d") || !strcmp(argv[1], "--dev"))
+		{
+			broker_ip = BROKER_IP_DEV;
+		}
+	}
+	start_producer();
+	return 0;
 }
 
-int producer()
+int start_producer()
 {
 	TEEC_Result res;
 	TEEC_Operation op;
 	uint32_t err_origin;
 	void *startFor, *endFor, *startMeasure, *endMeasure, *startInput, *endInput;
 	int differenceInBytes;
-	char offer[1500];
-	char signature[129];
-	char command_sub[5000];
-	char command_send_offer[5000];
+	char* topic = "electricity";
+	int topic_len = strlen(topic);
+
+	char* data = "test_data";
+	int data_len  = strlen(data);
+
 	int counter = 1;
 	int j = 0;
 	int z = 0;
@@ -48,15 +60,6 @@ int producer()
 	int amountT;
 	int priceT;
 	int character;
-	uint32_t offer_len = sizeof(offer);
-	uint32_t signature_len = sizeof(signature);
-	char *device_id = NULL;
-	uint32_t device_id_len = 128;
-	char *sign_output;
-	char *offer_output;
-	pid_t program_id, pid;
-	int sub_is_running;
-	FILE *file;
 
 	TEEC_SharedMemory in_shm = {
 		.flags = TEEC_MEM_INPUT
@@ -65,20 +68,6 @@ int producer()
 	res = start_ta_context();
 	if (res == TEEC_SUCCESS)
 		printf("[NORMAL WORLD] Context created.\n" );
-
-	device_id = malloc(device_id_len);
-
-	memset(&op, 0, sizeof(op));
-	memset(offer, 0, sizeof(offer));
-	memset(signature, 0, sizeof(signature));
-
-	op.paramTypes = TEEC_PARAM_TYPES(TEEC_MEMREF_TEMP_OUTPUT, TEEC_NONE, TEEC_NONE, TEEC_NONE);
-	op.params[0].tmpref.buffer = device_id;
- 	op.params[0].tmpref.size = device_id_len;
-
-	res = TEEC_InvokeCommand(&sess, TA_GET_DEVICE_ID, &op, &err_origin);
-	if (res != TEEC_SUCCESS)
-		errx(1, "TEEC_InvokeCommand failed with code 0x%x origin 0x%x", res, err_origin);
 
 	startInput = get_pc();
 	printf("Enter 'q' to abort or any other key to continue charging: \n");
@@ -110,11 +99,11 @@ int producer()
 	    differenceInBytes = (endFor - startFor) / sizeof(long long int) + sizeof(counter); //plus einmal für das i 
 
 	    //allocate shared memmory
-		in_shm.buffer = calloc(differenceInBytes-sizeof(counter), sizeof(long long int));
 		in_shm.size = differenceInBytes;
 		res = TEEC_AllocateSharedMemory(&ctx, &in_shm);
 		if (res != TEEC_SUCCESS)
 			printf("[NORMAL WORLD] Allocation error with code 0x%x\n", res);
+		in_shm.buffer = calloc(differenceInBytes-sizeof(counter), sizeof(long long int));
 		//fill in the SHḾ
 		for (int i = 0; i < differenceInBytes-sizeof(counter); i++)
 		{
@@ -142,11 +131,11 @@ int producer()
 		endMeasure = get_pc();
 		differenceInBytes = (endMeasure - startMeasure) / sizeof(long long int);
 
-		in_shm.buffer = calloc(differenceInBytes, sizeof(long long int));
 		in_shm.size = differenceInBytes;
 		res = TEEC_AllocateSharedMemory(&ctx, &in_shm);
 		if (res != TEEC_SUCCESS)
 			printf("[NORMAL WORLD] Allocation error with code 0x%x\n", res);
+		in_shm.buffer = calloc(differenceInBytes, sizeof(long long int));
 		for (int i = 0; i < differenceInBytes; i++)
 		{
 			memcpy(((long long int *)in_shm.buffer)+i, startFor+i*sizeof(long long int), sizeof(long long int));
@@ -185,12 +174,12 @@ int producer()
     printf("You sell %i kWh for %i Szabo (%i Szabo/kWh).\n", amountT, priceT*amountT, priceT);
 	endInput = get_pc();
 	differenceInBytes = (endInput - startInput) / sizeof(long long int); //plus einmal für das i 
-	in_shm.buffer = calloc(differenceInBytes, sizeof(long long int));
 	in_shm.size = differenceInBytes;
 
 	res = TEEC_AllocateSharedMemory(&ctx, &in_shm);
 	if (res != TEEC_SUCCESS)
 		printf("[NORMAL WORLD] Allocation error with code 0x%x\n", res);
+	in_shm.buffer = calloc(differenceInBytes, sizeof(long long int));
 
 	//fill in the SHḾ
 	for (int i = 0; i < differenceInBytes; i++)
@@ -208,84 +197,13 @@ int producer()
 	op.params[1].value.a = differenceInBytes;
 	op.params[2].value.a = 2;
 
-	
 	res = TEEC_InvokeCommand(&sess, TA_HELLO_WORLD_CHECK_MEMORY_REGION, &op, &err_origin);
-
-
 	if (res != TEEC_SUCCESS)
 		errx(1, "TEEC_InvokeCommand failed with code 0x%x origin 0x%x", res, err_origin);
 	
 	TEEC_ReleaseSharedMemory(&in_shm);
 
-	memset(&op, 0, sizeof(op));
-
-	op.paramTypes = TEEC_PARAM_TYPES(TEEC_VALUE_INPUT, TEEC_MEMREF_TEMP_OUTPUT, TEEC_VALUE_INPUT, TEEC_MEMREF_TEMP_OUTPUT);
-	op.params[0].value.a = amountT;
-	op.params[0].value.b = priceT;
-
-	op.params[1].tmpref.buffer = offer;
- 	op.params[1].tmpref.size = offer_len;
-
- 	op.params[2].value.a = 0;
-
- 	op.params[3].tmpref.buffer = signature;
- 	op.params[3].tmpref.size = signature_len;
-
-	res = TEEC_InvokeCommand(&sess, TA_BLOCKCHAIN_WALLET, &op, &err_origin);
-	if (res != TEEC_SUCCESS)
-		errx(1, "TEEC_InvokeCommand failed with code 0x%x origin 0x%x",	res, err_origin);
-
-	offer_output = malloc(offer_len+1);
-	sign_output = malloc(signature_len+1);
-
-	snprintf(sign_output, strlen(signature)+1, "%s", signature);
-	snprintf(offer_output, strlen(offer)+1, "%s", offer);
-
-	snprintf(command_sub, 194, "mosquitto_sub -h %s -t electricity/%s/# --keysS &", BROKER_IP, device_id);
-
-	file = fopen("/bin/pid.txt", "r");
-	if (file == NULL)
-	{
-		printf("Error opening file!\n");
-	}
-
-	fscanf(file, "%i", &pid);
-
-	fclose(file);
-
-	sub_is_running = kill(pid, 0);
-
-	if (sub_is_running != 0) 
-	{
-		program_id = fork();
-    	if ( program_id == -1 ) {
-	        perror("fork failed");
-	        return EXIT_FAILURE;
-	    }
-	    else if ( program_id == 0 ) {
-	        execl("/bin/sh", "bin/sh", "-c", command_sub, NULL);
-	        return EXIT_FAILURE;
-	    }
-
-	    int status;
-	    if ( waitpid(program_id, &status, 0) == -1 ) {
-	        perror("waitpid failed");
-	        return EXIT_FAILURE;
-	    }
-		file = fopen("/bin/pid.txt", "w");
-		if (file == NULL)
-		{
-			printf("Error opening file!\n");
-		}
-
-		fprintf(file, "%i", program_id+1);
-		fclose(file);
-		printf("Subscribed to Device-Channel\n");
-	}
-
-	sprintf(command_send_offer, "mosquitto_pub -h %s -t electricity/%s/supply -m %s%s --keysP", BROKER_IP, device_id, offer_output, sign_output);
-	printf("send offer to marketplace\n");
-	system(command_send_offer);
+	producer(topic, topic_len, priceT, amountT, data, data_len);
 
 	stop_ta_context();
 	return 0;

@@ -12,7 +12,7 @@
 #include <tee_client_api.h>
 
 /* To the the UUID (found the the TA's h-file(s)) */
-#include <eciotify_ta.h>
+#include <eciotify_generals.h>
 
 TEEC_Result start_ta_context();
 void stop_ta_context();

@@ -17,11 +17,11 @@ all: register producer consumer unregister
 register: register_device.o
 	$(CC) $(LDADD) -o $@ $<
 
-producer: producer.o
-	$(CC) $(LDADD) -o $@ $< 
+producer: producer.o weeve_sockets.o
+	$(CC) $(LDADD) -o $@ $^
 
-consumer: consumer.o
-	$(CC) $(LDADD) -o $@ $< 
+consumer: consumer.o weeve_sockets.o
+	$(CC) $(LDADD) -o $@ $^
 
 unregister: unregister_device.o
 	$(CC) $(LDADD) -o $@ $< 

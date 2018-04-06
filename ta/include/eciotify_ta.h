@@ -27,47 +27,42 @@
 #ifndef TA_ECIOTIFY_H
 #define TA_ECIOTIFY_H
 
-/* This UUID is generated with uuidgen
-   the ITU-T UUID generator at http://www.itu.int/ITU-T/asn1/uuid.html */
-#define TA_ECIOTIFY_UUID { 0x8aaaf200, 0x2450, 0x11e4, \
-		{ 0xab, 0xe2, 0x00, 0x02, 0xa5, 0xd5, 0xc5, 0x1b} }
+#include <ta_common.h>
 
-#define BROKER_IP "dev.weeve.network"
+/**
+ *	Functions
+ */ 
+TEE_Result del_keys(void);
+TEE_Result gen_keys(void);
+TEE_Result gen_bc_key(void);
+TEE_Result register_device(uint32_t param_types, TEE_Param params[4]);
+TEE_Result save_bc_keys(uint32_t param_types, TEE_Param params[4]);
+TEE_Result check_memory_region(uint32_t param_types, TEE_Param params[4]);
+TEE_Result blockchain_wallet(uint32_t param_types, TEE_Param params[4]);
+TEE_Result get_hash(void *storage_id, uint32_t storage_id_len, uint8_t* out, uint32_t outsz);
+TEE_Result store_hash(void *storage_id, uint32_t storage_id_len, void* hash, uint32_t hash_len);
+TEE_Result ecc_operation(TEE_ObjectHandle key, TEE_OperationMode mode, uint32_t alg, TEE_Attribute *params, uint32_t paramCount, void *in_chunk, uint32_t in_chunk_len, void *out_chunk, uint32_t *out_chunk_len);
+TEE_Result get_key_object(void *storage_id, uint32_t storage_id_len, TEE_ObjectHandle *keys);
+TEE_Result hash(uint32_t algo, uint32_t mode, void *in, uint32_t insz, void *out, uint32_t *outsz);
+TEE_Result aes_gcm_cipher(TEE_ObjectHandle key_handler, void *in, uint32_t insz,	void *out, uint32_t *outsz, void *tag, uint32_t *tagsz, uint8_t* iv, uint32_t ivsz, uint32_t alg, uint32_t mode);
+TEE_Result return_ecdsa_keys(uint32_t param_types, TEE_Param params[4]);
+TEE_Result return_ecdh_keys(uint32_t param_types, TEE_Param params[4]);
+TEE_Result return_sign_keys(uint32_t param_types, TEE_Param params[4]);
+TEE_Result verify_signature(uint32_t param_types, TEE_Param params[4]);
+TEE_Result get_device_id(uint32_t param_types, TEE_Param params[4]);
+TEE_Result create_credential_keys(uint32_t param_types);
+TEE_Result delete_persistent_object(uint32_t param_types, TEE_Param params[4]);
+TEE_Result delete_persistent_files(void *derived_storage_id, int derived_storage_id_len);
+TEE_Result aes128_gcm_decrypt(uint32_t param_types, TEE_Param params[4]);
+TEE_Result aes128_gcm_encrypt(uint32_t param_types, TEE_Param params[4]);
+TEE_Result derive_from_public_key(uint32_t param_types, TEE_Param params[4]);
+TEE_Result verify_broker_signature(uint32_t param_types, TEE_Param params[4]);
+TEE_Result get_broker_dsa_key(uint32_t param_types, TEE_Param params[4]);
+TEE_Result save_signature(uint32_t param_types, TEE_Param params[4]);
+TEE_Result get_signature(uint32_t param_types, TEE_Param params[4]);
+void* kdf(void *msk, int msk_len, uint32_t *output_keys_len);
+void printCharValue(uint8_t* value, int size);
+void printHexValue(uint8_t* value, int size);
 
-
-/***********************************************/
-/***********************************************/
-#define TA_GEN_MQTTS_KEYS						1
-#define TA_GEN_TESTIMONY_KEYS					2
-#define TA_GEN_WALLET_KEYS						3
-#define TA_REGISTER_DEVICE						4
-#define TA_SAVE_BC_KEYS							5
-/***********************************************/		
-/***********************************************/
-#define TA_HELLO_WORLD_CHECK_MEMORY_REGION 		6
-#define TA_BLOCKCHAIN_WALLET					7
-/***********************************************/
-/***********************************************/
-#define TA_HELLO_WORLD_CMD_OBJ_ECDSA			8
-#define TA_HELLO_WORLD_CMD_OBJ_ECDH				9
-#define TA_HELLO_WORLD_CMD_OBJ_GET_SIGN_KEYS 	10
-#define TA_HELLO_WORLD_CMD_OBJ_ENCRYPT			11
-#define TA_HELLO_WORLD_CMD_OBJ_DECRYPT			12
-#define TA_HELLO_WORLD_CMD_CREATE_CREDENTIAL 	13
-#define TA_HELLO_WORLD_CMD_GET_ECDSA_KEYS	 	14
-#define TA_HELLO_WORLD_CMD_GET_ECDH_KEYS		15
-#define TA_HELLO_WORLD_CMD_OBJ_SIGN_KEYS 		16
-#define TA_HELLO_WORLD_CMD_VERIFY_SIGN			17
-#define TA_HELLO_WORLD_CMD_DERIVE_KEY			18
-#define TA_HELLO_WORLD_CMD_DELETE_PERS_OBJ		19
-#define TA_GET_DEVICE_ID						20
-/***********************************************/
-#define	TA_DEL_KEYS								21
-/***********************************************/
-#define TA_SAVE_MARKETPLACE_KEY					22
-/*
- * Supported algorithms
- */
-#define TA_SHA_SHA1	0
 
 #endif /*TA_ECIOTIFY_H*/

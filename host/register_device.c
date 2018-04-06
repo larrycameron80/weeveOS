@@ -15,12 +15,13 @@
 #include <tee_client_api.h>
 
 /* To the the UUID (found the the TA's h-file(s)) */
-#include <eciotify_ta.h>
+#include <eciotify_generals.h>
 
 TEEC_Result start_ta_context();
 void stop_ta_context();
 int register_device();
 pid_t popen2(const char *command, int *infp, int *outfp);
+char *broker_ip = BROKER_IP_LIVE;
 
 TEEC_Context ctx;
 TEEC_Session sess;
@@ -29,7 +30,15 @@ TEEC_Session sess;
 int main(int argc, char *argv[])
 {
 	printf("###### Register device ######\n");
+	if(argc > 1)
+	{
+		if(!strcmp(argv[1], "-d") || !strcmp(argv[1], "--dev"))
+		{
+			broker_ip = BROKER_IP_DEV;
+		}
+	}
 	register_device();
+	return 0;
 }
 
 int register_device() 
@@ -41,9 +50,7 @@ int register_device()
 	char vk_mqtts[256];
 	char vk_testimony[256];
 	char vk_blockchain[256+42];
-	char command_vk_mqtts[5000];
-	char command_vk_testimony[5000];
-	char command_vk_blockchain[5000];
+	char command_vk_keys[5000];
 	char command_sub[5000];
 	char  command_gen_keys[] = "ethwallet generate";
 	FILE *fp;
@@ -134,7 +141,7 @@ int register_device()
 	printf("vk_testimony: (%zu) %s\n", op.params[2].tmpref.size, vk_testimony);
 	printf("vk_blockchain: (%zu) %s\n", op.params[3].tmpref.size, vk_blockchain);
 
-	snprintf(command_sub, 194, "mosquitto_sub -h %s -t electricity/%s/# --keysS &", BROKER_IP, device_id);
+	snprintf(command_sub, 182, "mosquitto_sub -h %s -t %s/# --keysS &", broker_ip, device_id);
 	
 	program_id = fork();
     if ( program_id == -1 ) {
@@ -162,15 +169,10 @@ int register_device()
 	fclose(file);
 	printf("Subscribed to Device-Channel\n");
 	sleep(10);
-	sprintf(command_vk_mqtts, "mosquitto_pub -h %s -t electricity/%s/register/mqtts -m %s --keysP", BROKER_IP, device_id, vk_mqtts);
-	printf("Send MQTTS VK to Gateway\n");
-	system(command_vk_mqtts);
-	sprintf(command_vk_testimony, "mosquitto_pub -h %s -t electricity/%s/register/testimony -m %s --keysP", BROKER_IP, device_id, vk_testimony);
-	printf("Send TESTIMONY VK to Gateway\n");
-	system(command_vk_testimony);
-	sprintf(command_vk_blockchain, "mosquitto_pub -h %s -t electricity/%s/register/wallet -m %s --keysP", BROKER_IP, device_id, vk_blockchain);
-	printf("Send WALLET VK to Gateway\n");
-	system(command_vk_blockchain);
+
+	sprintf(command_vk_keys, "mosquitto_pub -h %s -t %s/register -m %s%s%s --keysP", broker_ip, device_id, vk_mqtts, vk_testimony, vk_blockchain);
+	printf("Send keys to weeve marketplace\n");
+	system(command_vk_keys);
 	
 	stop_ta_context();
 	return 0;
