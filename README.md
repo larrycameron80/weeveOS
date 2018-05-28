@@ -135,7 +135,7 @@ If you want to experiment with trusted execution environments a good starting po
 ## HowTo 
 1. Set Jumpers of your HiKey LeMaker as follows: 1-2 Closed, 3-4 Open, 5-6 Closed
 2. Power On the HiKey and connect it with the microusb Adapter to your Computer
-3. Start install.sh (optional: execute install.sh with a fastboot device ID: sh install.sh "DEVICE_ID" ) and wait until flashing is done
+3. Start <a href="https://github.com/weeveiot/weeveOS/blob/master/install.sh" target="_blank">install.sh</a>  (optional: execute install.sh with a fastboot device ID: sh install.sh "DEVICE_ID" ) and wait until flashing is done
 4. Open Jumper 5-6, connect the UART Adapter with the Hikey and with a micro usb cable to your computer
 5. Start a serial Terminal like minicom (sudo minicom -c on -b 115200 -D /dev/ttyUSB0) and Press:
     1. CTRL A, then Z 
@@ -149,4 +149,4 @@ If you want to experiment with trusted execution environments a good starting po
 9. BeHappy
 
 ## <a name="contact"></a>Contact
-A good way to get in touch is our <a href="https://gitter.im/weeveiot" target="_blank">gitter channel</a>.
+In case you experience any troubles a good way to get in touch is our <a href="https://gitter.im/weeveiot" target="_blank">gitter channel</a>.
