@@ -121,11 +121,11 @@ When two offers (a supply and a demand) are being matched by the weeve Gateway, 
  * *register*: generates cryotographic key material in the Trusted Storage for the secure communication with the marketplace, the testification of data, and the Ethereum wallet. Through a challenge-response protocol the marketplace makes sure, that the device is the owner of the keys. For demonstration purposes the marketplace/gateway will transfer 10 ETH on our testchain to every device after its successful registration.
  * *consumer* and *producer*: start an energy-trading program on your IoT device. It emulates a process of consuming or producing energy. During each iteration the secure world will inspect the normal world program flow and testify the data. The last step is sending the testified IoT data to our marketplace, where the data will be processed further as tradable digital assets
  * *unregister*: clears the credential store with all cryotographic keys and trusted storages.
- 
-## <a name="hardware"></a>Running weeveOS on DevBoards
-If you want to experiment with trusted execution environments a good starting point would be the either the discontinued HiKey LeMaker or the recent <a href="https://www.96boards.org/product/hikey960/" target="_blank">HiKey 960</a>. Both devices have been tested successfully to support weeveOS.
 
 # HowTo install WeeveOS on HiKey LeMaker
+
+## <a name="hardware"></a>Running weeveOS on DevBoards
+If you want to experiment with trusted execution environments a good starting point would be the either the discontinued HiKey LeMaker or the recent <a href="https://www.96boards.org/product/hikey960/" target="_blank">HiKey 960</a>. Both devices have been tested successfully to support weeveOS.
 
 ## Requirements
 1. HiKey LeMaker
