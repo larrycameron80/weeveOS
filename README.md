@@ -125,5 +125,28 @@ When two offers (a supply and a demand) are being matched by the weeve Gateway, 
 ## <a name="hardware"></a>Running weeveOS on DevBoards
 If you want to experiment with trusted execution environments a good starting point would be the either the discontinued HiKey LeMaker or the recent <a href="https://www.96boards.org/product/hikey960/" target="_blank">HiKey 960</a>. Both devices have been tested successfully to support weeveOS.
 
+# HowTo install WeeveOS on HiKey LeMaker
+
+## Requirements
+1. HiKey LeMaker
+2. UART Adapter
+3. WeeveOS Image set
+
+## HowTo 
+1. Set Jumpers of your HiKey LeMaker as follows: 1-2 Closed, 3-4 Open, 5-6 Closed
+2. Power On the HiKey and connect it with the microusb Adapter to your Computer
+3. Start install.sh (optional: execute install.sh with a fastboot device ID: sh install.sh "DEVICE_ID" ) and wait until flashing is done
+4. Open Jumper 5-6, connect the UART Adapter with the Hikey and with a micro usb cable to your computer
+5. Start a serial Terminal like minicom (sudo minicom -c on -b 115200 -D /dev/ttyUSB0) and Press:
+    1. CTRL A, then Z 
+    2. configuration menu (Press O)
+    3. Serial port setup
+    4. Turn Hardware Flow Control off (Press F)
+    5. "ESC ESC"
+6. Restart Hikey LeMaker
+7. Wait until setup is finished.
+8. Connect to a Network (call nmtui for example)
+9. BeHappy
+
 ## <a name="contact"></a>Contact
 A good way to get in touch is our <a href="https://gitter.im/weeveiot" target="_blank">gitter channel</a>.
